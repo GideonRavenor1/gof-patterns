@@ -12,7 +12,6 @@
 Версия с Директором(Director)
 """
 
-
 from abc import (
     ABC,
     abstractmethod,
@@ -71,12 +70,12 @@ class Pizza:
 
     def __str__(self):
         info: str = (
-            f"Pizza name: {self.name} \n"
-            f"dough type: {self.dough.DoughDepth.name} & " 
-            f"{self.dough.DoughType.name}\n"
-            f"sauce type: {self.sauce.name} \n"
-            f"topping: {[element.name for element in self.topping]} \n"
-            f"cooking time: {self.cooking_time} minutes"
+            f'Pizza name: {self.name} \n'
+            f'dough type: {self.dough.DoughDepth.name} & '
+            f'{self.dough.DoughType.name}\n'
+            f'sauce type: {self.sauce.name} \n'
+            f'topping: {[element.name for element in self.topping]} \n'
+            f'cooking time: {self.cooking_time} minutes'
         )
         return info
 
@@ -104,6 +103,7 @@ class Builder(ABC):
     def get_pizza(self) -> Pizza:
         pass
 
+
 """
 Реализация конкретных строителей (шеф-поваров) для сборки пицц
 """
@@ -112,7 +112,7 @@ class Builder(ABC):
 class MargaritaPizzaBuilder(Builder):
 
     def __init__(self):
-        self.pizza = Pizza("Margarita")
+        self.pizza = Pizza('Margarita')
         self.pizza.cooking_time = 15
 
     def prepare_dough(self) -> None:

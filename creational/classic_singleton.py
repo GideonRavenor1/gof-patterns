@@ -15,12 +15,15 @@ class MySingleton(metaclass=SingletonBaseClass):
         self.value_b = 5
 
     def add_a_b(self) -> int:
-        return self.value_a+self.value_b
+        return self.value_a + self.value_b
 
     def get_name(self) -> str:
         return self.name
 
-    def set_name(self, name: str):
+    def set_name(
+        self,
+        name: str,
+    ):
         self.name = name
 
 
