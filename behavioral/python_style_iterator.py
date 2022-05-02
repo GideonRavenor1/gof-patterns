@@ -11,8 +11,7 @@ class PizzaItem:
 
 
 class PizzaSliceIterator(Iterator):
-    def __init__(self, pizza: List[PizzaItem],
-                 reverse: bool = False):
+    def __init__(self, pizza: List[PizzaItem], reverse: bool = False):
         self._pizza = pizza
         self._index: int = -1 if reverse else 0
         self._reverse = reverse
@@ -28,9 +27,8 @@ class PizzaSliceIterator(Iterator):
 
 class PizzaAggregate(Iterable):
     def __init__(self, amount_slices: int = 10):
-        self._slices = [PizzaItem(it+1) for it in range(amount_slices)]
-        print(f"Приготовили пиццу и порезали "
-              f"на {amount_slices} кусочков")
+        self._slices = [PizzaItem(it + 1) for it in range(amount_slices)]
+        print(f"Приготовили пиццу и порезали " f"на {amount_slices} кусочков")
 
     def amount_slices(self) -> int:
         return len(self._slices)
@@ -46,8 +44,7 @@ if __name__ == "__main__":
     pizza = PizzaAggregate(5)
     for item in pizza:
         print("Это " + str(item))
-    print("*" * 8 + "Обход в обратную сторону" + "*"*8)
+    print("*" * 8 + "Обход в обратную сторону" + "*" * 8)
     iterator = pizza.get_reverse_iterator()
     for item in iterator:
         print("Это " + str(item))
-

@@ -1,5 +1,4 @@
 class Platter:
-
     def __init__(self, platter_id: int):
         self._empty = True
         self._platter_id = platter_id
@@ -57,4 +56,3 @@ if __name__ == "__main__":
     obj_pool.releaseObject(my_platter)
     print(obj_pool)
     [obj_pool.getObject() for _ in range(4)]
-

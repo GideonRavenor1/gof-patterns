@@ -4,6 +4,7 @@ from enum import Enum
 
 class ChiefMood(Enum):
     """Настроение начальника"""
+
     GOOD = 1
     BAD = 2
     BETTER_STAY_AWAY = 3
@@ -22,10 +23,8 @@ class Strategy(ABC):
 
 
 class GoodStrategy(Strategy):
-
     def check_mood_chief(self, mood: ChiefMood) -> bool:
-        if (mood is ChiefMood.GOOD or
-                mood is ChiefMood.BAD):
+        if mood is ChiefMood.GOOD or mood is ChiefMood.BAD:
             return True
         return False
 
@@ -34,10 +33,8 @@ class GoodStrategy(Strategy):
 
 
 class BadStrategy(Strategy):
-
     def check_mood_chief(self, mood: ChiefMood) -> bool:
-        if (mood is ChiefMood.BETTER_STAY_AWAY or
-                mood is ChiefMood.BAD):
+        if mood is ChiefMood.BETTER_STAY_AWAY or mood is ChiefMood.BAD:
             return True
         return False
 
@@ -46,7 +43,6 @@ class BadStrategy(Strategy):
 
 
 class NormalStrategy(Strategy):
-
     def check_mood_chief(self, mood: ChiefMood) -> bool:
         # может у шефа и плохое настроение
         # но клиенты то тут не при чем
@@ -66,8 +62,7 @@ class NormalStrategy(Strategy):
 
 
 class Barista:
-    def __init__(self, strategy: Strategy,
-                 chief_mood: ChiefMood):
+    def __init__(self, strategy: Strategy, chief_mood: ChiefMood):
         self._strategy = strategy
         self._chief_mood = chief_mood
         print(f"Изначальное настроение шефа: {chief_mood.name}")
@@ -91,8 +86,7 @@ class Barista:
 
 
 if __name__ == "__main__":
-    barista = Barista(NormalStrategy(),
-                      ChiefMood.BETTER_STAY_AWAY)
+    barista = Barista(NormalStrategy(), ChiefMood.BETTER_STAY_AWAY)
     barista.take_order(20)
     barista.take_order(50)
     barista.set_strategy(BadStrategy())

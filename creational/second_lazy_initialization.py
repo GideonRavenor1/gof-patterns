@@ -1,10 +1,12 @@
 from typing import List
 
-from creational.builder_with_director import (PizzaSauceType,
-                                              PizzaBase,
-                                              PizzaDoughDepth,
-                                              PizzaDoughType,
-                                              PizzaTopLevelType)
+from creational.builder_with_director import (
+    PizzaSauceType,
+    PizzaBase,
+    PizzaDoughDepth,
+    PizzaDoughType,
+    PizzaTopLevelType,
+)
 
 """
 Класс компонуемого продукта
@@ -14,16 +16,17 @@ from creational.builder_with_director import (PizzaSauceType,
 class Pizza:
     def __init__(self, pizza_name: str):
         self._name = pizza_name
-        self._dough = PizzaBase(PizzaDoughDepth.THICK,
-                                PizzaDoughType.WHEAT)
+        self._dough = PizzaBase(PizzaDoughDepth.THICK, PizzaDoughType.WHEAT)
         self._sauce = None
         self._topping = None
         self._cooking_time = None  # in minute
 
     def __str__(self):
-        info: str = f"Pizza name: {self._name} \n" \
-                    f"dough type: {self._dough.DoughDepth.name} & " \
-                    f"{self._dough.DoughType.name}\n"
+        info: str = (
+            f"Pizza name: {self._name} \n"
+            f"dough type: {self._dough.DoughDepth.name} & "
+            f"{self._dough.DoughType.name}\n"
+        )
         if self._sauce is None:
             self._lazy_default_sauce()
         info += f"sauce type: {self._sauce} \n"
@@ -34,8 +37,10 @@ class Pizza:
 
         if self._cooking_time is None:
             self._lazy_default_time()
-        info += f"cooking time: {self._cooking_time} minutes \n" \
-                f"-----------------------------------------"
+        info += (
+            f"cooking time: {self._cooking_time} minutes \n"
+            f"-----------------------------------------"
+        )
         return info
 
     def _lazy_default_sauce(self) -> None:
@@ -44,9 +49,11 @@ class Pizza:
 
     def _lazy_default_topping(self) -> None:
         print('Topping Lazy initialization')
-        self._topping = [PizzaTopLevelType.MOZZARELLA,
-                         PizzaTopLevelType.MOZZARELLA,
-                         PizzaTopLevelType.BACON]
+        self._topping = [
+            PizzaTopLevelType.MOZZARELLA,
+            PizzaTopLevelType.MOZZARELLA,
+            PizzaTopLevelType.BACON,
+        ]
 
     def _lazy_default_time(self) -> None:
         print('Cooking time Lazy initialization')

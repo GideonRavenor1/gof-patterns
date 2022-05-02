@@ -1,5 +1,4 @@
-class MegaCalculation():
-
+class MegaCalculation:
     def __init__(self, value):
         self.value = value
 
@@ -12,7 +11,7 @@ class MegaCalculation():
         return self
 
     def pow(self, a):
-        self.value = self.value ** a
+        self.value = self.value**a
         return self
 
     def sub(self, a):

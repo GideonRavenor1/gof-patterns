@@ -36,9 +36,8 @@ class PizzaSliceIterator(Iterator):
 
 class PizzaAggregate:
     def __init__(self, amount_slices: int = 10):
-        self.slices = [PizzaItem(it+1) for it in range(amount_slices)]
-        print(f"Приготовили пиццу и порезали "
-              f"на {amount_slices} кусочков")
+        self.slices = [PizzaItem(it + 1) for it in range(amount_slices)]
+        print(f"Приготовили пиццу и порезали " f"на {amount_slices} кусочков")
 
     def amount_slices(self) -> int:
         return len(self.slices)
@@ -53,7 +52,7 @@ if __name__ == "__main__":
     while iterator.has_next():
         item = iterator.next()
         print("Это " + str(item))
-    print("*"*20)
+    print("*" * 20)
     iterator = pizza.iterator()
     iterator.next()
     while iterator.has_next():

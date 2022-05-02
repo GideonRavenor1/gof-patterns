@@ -7,6 +7,7 @@ T = TypeVar("T")
 
 class EnumOrder(Enum):
     """Тип Заказа"""
+
     VEGAN = 1
     NOT_VEGAN = 2
     BINGE = 3
@@ -60,9 +61,11 @@ class WaiterHandler(Handler):
         super().__init__(successor)
 
     def _check_request(self, request_type: EnumOrder) -> bool:
-        check = request_type in (EnumOrder.BINGE,
-                                 EnumOrder.VEGAN,
-                                 EnumOrder.NOT_VEGAN)
+        check = request_type in (
+            EnumOrder.BINGE,
+            EnumOrder.VEGAN,
+            EnumOrder.NOT_VEGAN,
+        )
         if check:
             print("Официант передает заказ дальше")
         else:
@@ -77,8 +80,7 @@ class KitchenHandler(Handler):
         super().__init__(successor)
 
     def _check_request(self, request_type: EnumOrder) -> bool:
-        check = request_type in (EnumOrder.VEGAN,
-                                 EnumOrder.NOT_VEGAN)
+        check = request_type in (EnumOrder.VEGAN, EnumOrder.NOT_VEGAN)
         if check:
             print("Шеф-повар приступил к готовке заказа на кухне")
         else:
@@ -97,8 +99,10 @@ class BarmanHandler(Handler):
         if check:
             print("Бармен наливает заказанный напиток клиентом")
         else:
-            print("Бармен разводит руками и может только восхититься "
-                  "гурманским вкусам клиента")
+            print(
+                "Бармен разводит руками и может только восхититься "
+                "гурманским вкусам клиента"
+            )
         return check
 
 
@@ -109,8 +113,9 @@ if __name__ == "__main__":
     waiter = WaiterHandler()
     # запрос всегда первым поступает официанту
     waiter.successor = bar
+
     def request_handler(request: RequestOrder):
-        print("*"*10+"Обработка запроса"+"*"*10)
+        print("*" * 10 + "Обработка запроса" + "*" * 10)
         print(f"Запрос от клиента: {request.order_list}")
         waiter.handle(request)
 

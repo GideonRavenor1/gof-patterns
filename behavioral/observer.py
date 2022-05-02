@@ -6,6 +6,7 @@ from typing import List
 
 class OrderType(Enum):
     """Типы возможных заказов"""
+
     CAPPUCCINO = 1
     LATTE = 2
     ESPRESSO = 3
@@ -13,6 +14,7 @@ class OrderType(Enum):
 
 class Order:
     """Класс заказа"""
+
     order_id: int = 1
 
     def __init__(self, order_type: OrderType):
@@ -87,17 +89,19 @@ class Client(Observer):
         и отписываемся от оповещения баристы"""
         if self.order is not None:
             if order_id == self.order.id:
-                print(f"Клиент {self.__name} забрал(а) "
-                      f"{self.__barista.get_order(order_id)}")
+                print(
+                    f"Клиент {self.__name} забрал(а) "
+                    f"{self.__barista.get_order(order_id)}"
+                )
                 self.__barista.detach(self)
 
     def create_order(self) -> None:
         """Метод для формирования заказа
         и подписки на оповещения от баристы
         по выполненному заказу"""
-        order_type = choice([OrderType.LATTE,
-                             OrderType.CAPPUCCINO,
-                             OrderType.ESPRESSO])
+        order_type = choice(
+            [OrderType.LATTE, OrderType.CAPPUCCINO, OrderType.ESPRESSO]
+        )
         self.order = Order(order_type)
         print(f"Клиент {self.__name} сделал(а) {self.order}")
         self.__barista.attach(self)
@@ -105,14 +109,13 @@ class Client(Observer):
 
 
 if __name__ == "__main__":
-    names = ['Анастасия', 'Анна',
-             'Роман', 'Ростислав', 'Руслан']
+    names = ['Анастасия', 'Анна', 'Роман', 'Ростислав', 'Руслан']
     barista = Barista()
     clients = [Client(name, barista) for name in names]
     for client in clients:
-        print("*"*30)
+        print("*" * 30)
         client.create_order()
     print("*" * 4 + "Бариста приступает к выполнению заказов" + 4 * "*")
     for _ in range(6):
-        print("*"*30)
+        print("*" * 30)
         barista.processing_order()

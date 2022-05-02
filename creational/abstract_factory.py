@@ -186,10 +186,7 @@ class Application:
 
 
 def create_factory(system_name: str) -> GuiAbstractFactory:
-    factory_dict = {
-        'Windows': WindowsGuiFactory,
-        'Linux': LinuxGuiFactory
-    }
+    factory_dict = {'Windows': WindowsGuiFactory, 'Linux': LinuxGuiFactory}
     return factory_dict[system_name]()
 
 

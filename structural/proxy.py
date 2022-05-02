@@ -1,99 +1,113 @@
-from abc import ABC, abstractmethod
+"""
+Паттерн Заместитель (Proxy) предоставляет объект-заместитель,
+который управляет доступом к другому объекту. То есть создается
+объект-суррогат, который может выступать в роли другого объекта и замещать его.
+Когда использовать прокси?
+
+    1. Когда надо осуществлять взаимодействие по сети, а объект-проси должен
+    имитировать поведения объекта в другом адресном пространстве.
+    Использование прокси позволяет снизить накладные издержки при передаче
+    данных через сеть. Подобная ситуация еще называется удалённый заместитель
+    (remote proxies)
+
+    2. Когда нужно управлять доступом к ресурсу, создание которого требует
+    больших затрат. Реальный объект создается только тогда, когда он
+    действительно может понадобиться, а до этого все запросы к нему
+    обрабатывает прокси-объект. Подобная ситуация еще называется виртуальный
+    заместитель (virtual proxies)
+
+    3. Когда необходимо разграничить доступ к вызываемому объекту в
+    зависимости от прав вызывающего объекта.
+    Подобная ситуация еще называется защищающий заместитель
+    (protection proxies)
+
+    4. Когда нужно вести подсчет ссылок на объект или обеспечить
+    потокобезопасную работу с реальным объектом. Подобная ситуация
+    называется "умные ссылки" (smart reference)
+
+Недостатки:
+    1. Увеличение времени отклика от сервиса/модуля.
+    2. Усложнение кода
+"""
+from abc import (
+    ABC,
+    abstractmethod,
+)
+from functools import partial
 
 
-class PizzaOrderFlyWeight:
+class ImageBase(ABC):
+    """Абстрактное изображение"""
 
-    def __init__(self, shared_state):
-        self.shared_state = shared_state
-
-    def __repr__(self):
-        return str(self.shared_state)
-
-
-class PizzaOrderContext:
-
-    def __init__(self, unique_state, flyweight: PizzaOrderFlyWeight):
-        self.unique_state = unique_state
-        self.flyweight = flyweight
-
-    def __repr__(self):
-        return f"уникальное состояние: {self.unique_state} \n" \
-               f"разделяемое состояние: {self.flyweight}"
-
-
-class FlyWeightFactory:
-
-    def __init__(self):
-        self.flyweights = []
-
-    def get_flyweight(self, shared_state) -> PizzaOrderFlyWeight:
-
-        flyweights = list(filter(lambda x: x.shared_state ==
-                                           shared_state, self.flyweights))
-        if flyweights:
-            return flyweights[0]
-        else:
-            flyweight = PizzaOrderFlyWeight(shared_state)
-            self.flyweights.append(flyweight)
-            return flyweight
-
-    @property
-    def total(self):
-        return len(self.flyweights)
-
-
-class IOrder(ABC):
     @abstractmethod
-    def make_pizza_order(self, unique_state, shared_state) -> PizzaOrderContext:
+    def draw(self, x, y, color):
+        """Рисует точку заданным цветом"""
+        pass
+
+    @abstractmethod
+    def fill(self, color):
+        """Заливка цветом"""
+        pass
+
+    @abstractmethod
+    def save(self, filename):
+        """Сохраняет изображение в файл"""
         pass
 
 
-class PizzaOrderMaker(IOrder):
+class Image(ImageBase):
+    """Изображение"""
 
-    def __init__(self, flyweight_factory: FlyWeightFactory):
-        self.flyweight_factory = flyweight_factory
-        self.contexts = []
+    def __init__(self, width, height):
+        self._width = int(width)
+        self._height = int(height)
+        print(
+            'Создаю изображение шириной %s и высотой %s' % (
+                self._width,
+                self._height,
+            )
+        )
 
-    def make_pizza_order(self, unique_state, shared_state) -> PizzaOrderContext:
-        flyweight = self.flyweight_factory.get_flyweight(shared_state)
-        context = PizzaOrderContext(unique_state, flyweight)
-        self.contexts.append(context)
+    def draw(self, x, y, color):
+        print('Рисуем точку; координаты: (%s, %s); цвет: %s' % (x, y, color))
 
-        return context
+    def fill(self, color):
+        print('Заливка цветом %s' % color)
 
-
-class ProxyOrderMaker(IOrder):
-
-    def __init__(self, real_subject: PizzaOrderMaker):
-        self.__real_subject = real_subject
-
-    def make_pizza_order(self, unique_state, shared_state) -> PizzaOrderContext:
-        self.__logging(unique_state, shared_state)
-        return self.__real_subject.make_pizza_order(unique_state, shared_state)
-
-    def check_access(self) -> bool:
-        print('Проверка готовности Proxy')
-        return self.__real_subject is not None
-
-    def __logging(self, unique_state, shared_state) -> None:
-        print(f"----Логируемые данные заказа----\n"
-              f"уникальное состояние: {unique_state} \n"
-              f"разделяемое состояние: {shared_state}")
+    def save(self, filename):
+        print('Сохраняем изображение в файл %s' % filename)
 
 
-if __name__ == "__main__":
-    flyweight_factory = FlyWeightFactory()
-    pizza_maker = PizzaOrderMaker(flyweight_factory)
-    log_proxy = ProxyOrderMaker(pizza_maker)
+class ImageProxy(ImageBase):
+    """
+    Заместитель изображения.
+    Откладывает выполнение операций над изображением до момента его сохранения.
+    """
 
-    shared_states = [(30, 'Большая пицца'),
-                     (25, 'Средняя пицца'),
-                     (10, 'Маленькая пицца')]
-    unique_states = ['Маргарита', 'Салями', '4 сыра']
+    def __init__(self, *args, **kwargs):
+        self._image = Image(*args, **kwargs)
+        self.operations = []
 
-    orders = [log_proxy.make_pizza_order(x, y)
-              for x in unique_states
-              for y in shared_states]
-    print("#"*20)
-    print("Количество созданных пицц:", len(orders))
-    print("Количество разделяемых объектов:", flyweight_factory.total)
+    def draw(self, *args):
+        func = partial(self._image.draw, *args)
+        self.operations.append(func)
+
+    def fill(self, *args):
+        func = partial(self._image.fill, *args)
+        self.operations.append(func)
+
+    def save(self, filename):
+        # выполняем все операции над изображением
+        [func() for func in self.operations]
+        # сохраняем изображение
+        self._image.save(filename)
+
+
+if __name__ == '__main__':
+    img = ImageProxy(200, 200)
+    img.fill('gray')
+    img.draw(0, 0, 'green')
+    img.draw(0, 1, 'green')
+    img.draw(1, 0, 'green')
+    img.draw(1, 1, 'green')
+    img.save('image.png')

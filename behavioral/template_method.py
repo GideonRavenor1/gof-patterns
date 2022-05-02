@@ -4,6 +4,7 @@ from typing import List
 
 class Pizza:
     """Класс приготовляемой шеф-поваром пиццы"""
+
     def __init__(self):
         self.__state: List[str] = ['base']
 
@@ -17,6 +18,7 @@ class Pizza:
 
 class PizzaMaker(ABC):
     """Базовый класс шаблонного метода"""
+
     def make_pizza(self, pizza: Pizza) -> None:
         self.prepare_sauce(pizza)
         self.prepare_topping(pizza)
@@ -37,6 +39,7 @@ class PizzaMaker(ABC):
 
 class MargaritaMaker(PizzaMaker):
     """Класс приготовления пиццы Маргарита"""
+
     def prepare_sauce(self, pizza: Pizza) -> None:
         pizza.add_ingredient('Tomato')
 
@@ -51,6 +54,7 @@ class MargaritaMaker(PizzaMaker):
 
 class SalamiMaker(PizzaMaker):
     """Класс приготовления пиццы Маргарита"""
+
     def prepare_sauce(self, pizza: Pizza) -> None:
         pizza.add_ingredient('Pesto')
 
@@ -65,6 +69,7 @@ class SalamiMaker(PizzaMaker):
 
 class Chief:
     """Класс шеф-повара"""
+
     def __init__(self, template_pizza: PizzaMaker):
         self.__cook = template_pizza
 
@@ -79,7 +84,7 @@ class Chief:
 
 if __name__ == "__main__":
     chief = Chief(MargaritaMaker())
-    print("*"*8 + "Готовим пиццу 'Маргарита'"+8*"*")
+    print("*" * 8 + "Готовим пиццу 'Маргарита'" + 8 * "*")
     print(chief.make_pizza())
     print("*" * 8 + "Готовим пиццу 'Салями'" + 8 * "*")
     chief.set_cook_template(SalamiMaker())

@@ -1,9 +1,32 @@
-from abc import ABC, abstractmethod
+"""
+Паттерн Адаптер (Adapter) предназначен для преобразования интерфейса одного
+класса в интерфейс другого. Благодаря реализации данного паттерна мы можем
+использовать вместе классы с несовместимыми интерфейсами.
+Когда надо использовать Адаптер?
+
+    1. Когда необходимо использовать имеющийся класс, но его интерфейс не
+    соответствует потребностям
+
+    2. Когда надо использовать уже существующий класс совместно с другими
+    классами, интерфейсы которых не совместимы
+
+Недостатки: Усложнение кода программы за счет добавления множества
+дополнительных классов.
+"""
+
+
+from abc import (
+    ABC,
+    abstractmethod,
+)
 
 
 class IOven(ABC):
-    """Исходный интерфейс плиты,
-    где единица измерения температуры - F"""
+    """
+    Исходный интерфейс плиты,
+    где единица измерения температуры - F
+    """
+
     @abstractmethod
     def get_temperature(self) -> float:
         pass
@@ -14,9 +37,12 @@ class IOven(ABC):
 
 
 class ICelsiusOven(ABC):
-    """Интерфейс плиты с которым будем осуществлять
+    """
+    Интерфейс плиты с которым будем осуществлять
     работу в рамках разрабатываемой системы,
-    где единица измерения температуры - C"""
+    где единица измерения температуры - C
+    """
+
     @abstractmethod
     def get_celsius_temperature(self) -> float:
         pass
@@ -31,14 +57,16 @@ class ICelsiusOven(ABC):
 
 
 class OriginalOven(IOven):
-    """Класс кухонной плиты, который будем адаптировать"""
+    """
+    Класс кухонной плиты, который будем адаптировать
+    """
+
     def __init__(self, t: float):
-        assert t >= 32, "Мы тут не холодильник реализуем"
+        assert t >= 32, 'Мы тут не холодильник реализуем'
         self.temperature = t
 
     def set_temperature(self, t: float) -> None:
-        assert t >= 32, "Печь которая может морозить? Хм... " \
-                        "интересненько"
+        assert t >= 32, 'Печь которая может морозить? Хм... интересненько'
         self.temperature = t
 
     def get_temperature(self) -> float:
@@ -46,11 +74,14 @@ class OriginalOven(IOven):
 
 
 class OvenAdapter(ICelsiusOven):
-    """Адаптер, позволяющий работать с плитой, где
-     единица измерения температуры фаренгейты в
-     градусах цельсия"""
-    CELSIUS_TO_FAHRENHEIT: float = 9.0/5.0
-    FAHRENHEIT_TO_CELSIUS: float = 5.0/9.0
+    """
+    Адаптер, позволяющий работать с плитой, где
+    единица измерения температуры фаренгейты в
+    градусах цельсия
+    """
+
+    CELSIUS_TO_FAHRENHEIT: float = 9.0 / 5.0
+    FAHRENHEIT_TO_CELSIUS: float = 5.0 / 9.0
     FAHRENHEIT_ZERO: float = 32.0
 
     def __init__(self, original_stove: IOven):
@@ -61,33 +92,34 @@ class OvenAdapter(ICelsiusOven):
         return self.stove.get_temperature()
 
     def _init_temperature(self) -> float:
-        return (OvenAdapter.FAHRENHEIT_TO_CELSIUS *
-                (self.stove.get_temperature() -
-                 OvenAdapter.FAHRENHEIT_ZERO))
+        return OvenAdapter.FAHRENHEIT_TO_CELSIUS * (
+            self.stove.get_temperature() - OvenAdapter.FAHRENHEIT_ZERO
+        )
 
     def get_celsius_temperature(self) -> float:
         return self.temperature
 
     def set_celsius_temperature(self, t: float) -> None:
-
-        new_temperature_stove = (OvenAdapter.CELSIUS_TO_FAHRENHEIT * t +
-                                 OvenAdapter.FAHRENHEIT_ZERO)
+        new_temperature_stove = (
+            OvenAdapter.CELSIUS_TO_FAHRENHEIT * t + OvenAdapter.FAHRENHEIT_ZERO
+        )
         self.stove.set_temperature(new_temperature_stove)
         self.temperature = t
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
+
     def print_temperature(stove: ICelsiusOven):
-        print(f"Original temperature = {stove.get_original_temperature()}"
-              f" F")
-        print(f"Celsius temperature = {stove.get_celsius_temperature()}")
+        print(
+            f'Original temperature = {stove.get_original_temperature()} ' 'F'
+        )
+        print(f'Celsius temperature = {stove.get_celsius_temperature()}')
 
     fahrenheit_stove = OriginalOven(32)
     celsius_stove = OvenAdapter(fahrenheit_stove)
     print_temperature(celsius_stove)
     celsius_stove.set_celsius_temperature(180)
-    print("----------------")
-    print("New temperature")
-    print("----------------")
+    print('----------------')
+    print('New temperature')
+    print('----------------')
     print_temperature(celsius_stove)
-
-

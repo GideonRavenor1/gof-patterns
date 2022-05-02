@@ -16,6 +16,7 @@ class MonostateSingleton(Borg):
     def set_name(self, name: str):
         self.name = name
 
+
 class NewSingleton(Borg):
     def __init__(self):
         Borg.__init__(self)
@@ -26,6 +27,7 @@ class NewSingleton(Borg):
 
     def set_name(self, name: str):
         self.name = name
+
 
 if __name__ == "__main__":
     my_singleton1 = MonostateSingleton()

@@ -4,6 +4,7 @@ from typing import List
 
 class ICommand(ABC):
     """Интерфейсный класс для выполняемых операций"""
+
     @abstractmethod
     def execute(self) -> None:
         ...
@@ -44,6 +45,7 @@ class ChiefCooker:
 
 class PrepareStoveCommand(ICommand):
     """Класс команды для разогрева печи"""
+
     def __init__(self, executor: Stove):
         self.__executor = executor
 
@@ -53,6 +55,7 @@ class PrepareStoveCommand(ICommand):
 
 class PrepareDoughCommand(ICommand):
     """Класс команды для подготовки теста пиццы"""
+
     def __init__(self, executor: ChiefAssistant):
         self.__executor = executor
 
@@ -62,6 +65,7 @@ class PrepareDoughCommand(ICommand):
 
 class PrepareToppingCommand(ICommand):
     """Класс команды для нарезки начинки пиццы"""
+
     def __init__(self, executor: ChiefAssistant):
         self.__executor = executor
 
@@ -71,6 +75,7 @@ class PrepareToppingCommand(ICommand):
 
 class PrepareSauceCommand(ICommand):
     """Класс команды для приготовления соуса"""
+
     def __init__(self, executor: ChiefAssistant):
         self.__executor = executor
 
@@ -80,6 +85,7 @@ class PrepareSauceCommand(ICommand):
 
 class CookingPizzaCommand(ICommand):
     """Класс команды для приготовления пиццы в печи"""
+
     def __init__(self, executor: Stove):
         self.__executor = executor
 
@@ -89,6 +95,7 @@ class CookingPizzaCommand(ICommand):
 
 class MakePizzaBaseCommand(ICommand):
     """Класс команды для приготовления основы для пиццы"""
+
     def __init__(self, executor: ChiefCooker):
         self.__executor = executor
 
@@ -98,6 +105,7 @@ class MakePizzaBaseCommand(ICommand):
 
 class AppliedSauceCommand(ICommand):
     """Класс команды для нанесения соуса на пиццу"""
+
     def __init__(self, executor: ChiefCooker):
         self.__executor = executor
 
@@ -117,7 +125,7 @@ class AddToppingCommand(ICommand):
 
 class BonAppetitCommand(ICommand):
     """Класс команды для пожелания клиенту
-       приятного аппетита"""
+    приятного аппетита"""
 
     def __init__(self, executor: ChiefCooker):
         self.__executor = executor
@@ -128,7 +136,8 @@ class BonAppetitCommand(ICommand):
 
 class Pizzeria:
     """Класс агрегации всех команд для приготовления
-       пиццы"""
+    пиццы"""
+
     def __init__(self):
         self.history: List[ICommand] = []
 
@@ -137,8 +146,10 @@ class Pizzeria:
 
     def cook(self) -> None:
         if not self.history:
-            print("Не задана очередность выполнения"
-                  " команд приготовления пиццы")
+            print(
+                "Не задана очередность выполнения"
+                " команд приготовления пиццы"
+            )
         else:
             for executor in self.history:
                 executor.execute()

@@ -24,6 +24,7 @@ from creational.builder_with_director import (
     PizzaDoughType,
     PizzaTopLevelType,
 )
+
 """
 Класс компонуемого продукта
 """
@@ -31,7 +32,7 @@ from creational.builder_with_director import (
 
 class Pizza:
     def __init__(
-        self, 
+        self,
         builder: ClassVar,
     ):
         self.name = builder.name
@@ -115,7 +116,8 @@ if __name__ == '__main__':
     builder.set_sauce(PizzaSauceType.TOMATO)
     builder.set_topping(
         [
-            it for it in (
+            it
+            for it in (
                 PizzaTopLevelType.MOZZARELLA,
                 PizzaTopLevelType.MOZZARELLA,
                 PizzaTopLevelType.BACON,

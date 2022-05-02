@@ -4,6 +4,7 @@ from typing import List
 class Memento:
     """Класс Хранитель, фиксирующий текущее
     состояние наличия ингридиентов в пицце"""
+
     def __init__(self, state: List[str]):
         self.__state = state
 
@@ -13,6 +14,7 @@ class Memento:
 
 class Pizza:
     """Класс приготовляемой шеф-поваром пиццы"""
+
     def __init__(self):
         self.__state: List[str] = ['base']
 
@@ -38,7 +40,6 @@ class Chief:
     def add_ingredient_to_pizza(self, ingredient: str):
         self.pizza_states.append(self.pizza.create_memento())
         self.pizza.add_ingredient(ingredient)
-
 
     def undo_add_ingredient(self):
         if len(self.pizza_states) == 1:
@@ -71,4 +72,3 @@ if __name__ == "__main__":
     chief.add_ingredient_to_pizza('соус')
     chief.add_ingredient_to_pizza('4 сыра')
     print(pizza)
-

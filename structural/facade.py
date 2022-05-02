@@ -1,9 +1,36 @@
-from abc import ABC, abstractmethod
+"""
+Фасад (Facade) представляет шаблон проектирования, который позволяет скрыть
+сложность системы с помощью предоставления упрощенного интерфейса
+для взаимодействия с ней.
+Когда использовать фасад?
+
+    1. Когда имеется сложная система, и необходимо упростить с ней работу.
+    Фасад позволит определить одну точку взаимодействия между
+    клиентом и системой.
+
+    2. Когда надо уменьшить количество зависимостей между клиентом и сложной
+    системой. Фасадные объекты позволяют отделить, изолировать компоненты
+    системы от клиента и развивать и работать с ними не зависимо.
+
+    3. Когда нужно определить подсистемы компонентов в сложной системе.
+    Создание фасадов для компонентов каждой отдельной подсистемы
+    позволит упростить взаимодействие между ними и
+    повысить их независимость друг от друга.
+
+Недостатки: Может разрастись до некоего "Божественного объекта"(God object),
+который будет привязан ко всем классам программы.
+"""
+
+from abc import (
+    ABC,
+    abstractmethod,
+)
 from enum import Enum
 
-###################Menu and IClient########################
+
 class MenuType(Enum):
     """Тип меню"""
+
     VEGAN = 1
     NOT_VEGAN = 2
     MIXED = 3
@@ -14,6 +41,7 @@ class IMenu(ABC):
     Базовый класс, задающий
     интерфейс создаваемых меню
     """
+
     @abstractmethod
     def get_name(self):
         pass
@@ -21,17 +49,17 @@ class IMenu(ABC):
 
 class VeganMenu(IMenu):
     def get_name(self):
-        return "Вегетарианское меню"
+        return 'Вегетарианское меню'
 
 
 class NotVeganMenu(IMenu):
     def get_name(self):
-        return "Не вегетарианское меню"
+        return 'Не вегетарианское меню'
 
 
 class MixedMenu(IMenu):
     def get_name(self):
-        return "Смешанное меню"
+        return 'Смешанное меню'
 
 
 class IClient(ABC):
@@ -39,6 +67,7 @@ class IClient(ABC):
     Базовый класс, задающий
     интерфейс клиентов пиццерии
     """
+
     @abstractmethod
     def request_menu(self, menu: IMenu):
         ...
@@ -63,37 +92,42 @@ class Kitchen:
     """
     Кухня
     """
+
     def prepare_food(self):
-        print("Заказанная еда готовится!")
+        print('Заказанная еда готовится!')
 
     def call_waiter(self):
-        print("Отдаем приготовленную еду официанту")
+        print('Отдаем приготовленную еду официанту')
 
 
 class Waiter:
     """
     Официант
     """
+
     def take_order(self, client: IClient):
-        print(f"Официант принял заказ клиента {client.get_name()}")
+        print(f'Официант принял заказ клиента {client.get_name()}')
 
     def send_to_kitchen(self, kitchen: Kitchen):
-        print("Официант отнес заказ на кухню")
+        print('Официант отнес заказ на кухню')
 
     def serve_client(self, client: IClient):
-        print(f"Блюда готовы, несем клиенту c именем {client.get_name()}!")
+        print(f'Блюда готовы, несем клиенту c именем {client.get_name()}!')
 
 
 class PizzeriaFacade:
     """
     Пиццерия на основе паттерна 'Фасад'
     """
+
     def __init__(self):
         self.kitchen = Kitchen()
         self.waiter = Waiter()
-        self.menu = {MenuType.VEGAN: VeganMenu,
-                     MenuType.NOT_VEGAN: NotVeganMenu,
-                     MenuType.MIXED: MixedMenu}
+        self.menu = {
+            MenuType.VEGAN: VeganMenu,
+            MenuType.NOT_VEGAN: NotVeganMenu,
+            MenuType.MIXED: MixedMenu,
+        }
 
     def get_menu(self, type_menu: MenuType) -> IMenu:
         return self.menu[type_menu]()
@@ -113,31 +147,31 @@ class Client(IClient):
     """
     Класс клиента пиццерии
     """
+
     def __init__(self, name: str):
         self.name = name
 
     def request_menu(self, menu: IMenu):
-        print(f"Клиент {self.name} ознакамливается с '{menu.get_name()}'")
+        print(f'Клиент {self.name} просматривает {menu.get_name()}')
 
     def form_order(self) -> dict:
-        print(f"Клиент {self.name} делает заказ")
+        print(f'Клиент {self.name} делает заказ')
         return {}
 
     def eating_food(self):
-        print(f"Клиент {self.name} приступает к трапезе")
+        print(f'Клиент {self.name} приступает к трапезе')
 
     def get_name(self):
         return self.name
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pizzeria = PizzeriaFacade()
-    client1 = Client("Иван")
-    client2 = Client("Александр")
+    client1 = Client('Иван')
+    client2 = Client('Александр')
     client1.request_menu(pizzeria.get_menu(MenuType.MIXED))
     pizzeria.take_order(client1)
     client2.request_menu(pizzeria.get_menu(MenuType.VEGAN))
     pizzeria.take_order(client2)
     client1.eating_food()
     client2.eating_food()
-

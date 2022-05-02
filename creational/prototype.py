@@ -39,7 +39,8 @@ from creational.builder_with_director import (
 
 class IPrototype(ABC):
     @abstractmethod
-    def clone(self): pass
+    def clone(self):
+        pass
 
 
 """
@@ -57,7 +58,7 @@ class Pizza(IPrototype):
         ),
         sauce: PizzaSauceType = PizzaSauceType.TOMATO,
         topping: List[PizzaTopLevelType] = None,
-        cooking_time: int = 10
+        cooking_time: int = 10,
     ):
         self.name = name
         self.dough = dough
@@ -68,7 +69,8 @@ class Pizza(IPrototype):
     def __str__(self):
         toppings = (
             [it.name for it in self.topping]
-            if self.topping is not None else 'None'
+            if self.topping is not None
+            else 'None'
         )
         info: str = (
             f'Pizza name: {self.name} \n'
@@ -95,11 +97,12 @@ class Pizza(IPrototype):
 
 if __name__ == '__main__':
     pizza = Pizza(
-        'Margarita', topping=[
+        'Margarita',
+        topping=[
             PizzaTopLevelType.MOZZARELLA,
             PizzaTopLevelType.MOZZARELLA,
-            PizzaTopLevelType.BACON
-        ]
+            PizzaTopLevelType.BACON,
+        ],
     )
 
     print(pizza)

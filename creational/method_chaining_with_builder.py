@@ -1,8 +1,11 @@
-from creational.builder_with_director import (PizzaSauceType,
-                                              PizzaBase,
-                                              PizzaDoughDepth,
-                                              PizzaDoughType,
-                                              PizzaTopLevelType)
+from creational.builder_with_director import (
+    PizzaSauceType,
+    PizzaBase,
+    PizzaDoughDepth,
+    PizzaDoughType,
+    PizzaTopLevelType,
+)
+
 """
 Класс компонуемого продукта
 """
@@ -17,12 +20,14 @@ class Pizza:
         self.cooking_time = builder.cooking_time  # in minute
 
     def __str__(self):
-        info: str = f"Pizza name: {self.name} \n" \
-                    f"dough type: {self.dough.DoughDepth.name} & " \
-                    f"{self.dough.DoughType.name}\n" \
-                    f"sauce type: {self.sauce} \n" \
-                    f"topping: {[it.name for it in self.topping]} \n" \
-                    f"cooking time: {self.cooking_time} minutes"
+        info: str = (
+            f"Pizza name: {self.name} \n"
+            f"dough type: {self.dough.DoughDepth.name} & "
+            f"{self.dough.DoughType.name}\n"
+            f"sauce type: {self.sauce} \n"
+            f"topping: {[it.name for it in self.topping]} \n"
+            f"cooking time: {self.cooking_time} minutes"
+        )
         return info
 
     @staticmethod
@@ -63,17 +68,22 @@ class _Builder:
 if __name__ == "__main__":
     # Готовим пиццу Маргарита
     pizza_base = PizzaBase(PizzaDoughDepth.THICK, PizzaDoughType.WHEAT)
-    pizza = Pizza.getBuilder().\
-        set_name("Margarita")\
-        .set_dough(pizza_base)\
-        .set_sauce(PizzaSauceType.TOMATO)\
+    pizza = (
+        Pizza.getBuilder()
+        .set_name("Margarita")
+        .set_dough(pizza_base)
+        .set_sauce(PizzaSauceType.TOMATO)
         .set_topping(
             [
-                it for it in (PizzaTopLevelType.MOZZARELLA,
-                              PizzaTopLevelType.MOZZARELLA,
-                              PizzaTopLevelType.BACON,
-                              )
-            ])\
-        .set_cooking_time(10)\
+                it
+                for it in (
+                    PizzaTopLevelType.MOZZARELLA,
+                    PizzaTopLevelType.MOZZARELLA,
+                    PizzaTopLevelType.BACON,
+                )
+            ]
+        )
+        .set_cooking_time(10)
         .build()
+    )
     print(pizza)

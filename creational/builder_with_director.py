@@ -88,7 +88,6 @@ class Pizza:
 
 
 class Builder(ABC):
-
     @abstractmethod
     def prepare_dough(self) -> None:
         pass
@@ -112,7 +111,6 @@ class Builder(ABC):
 
 
 class MargaritaPizzaBuilder(Builder):
-
     def __init__(self):
         self.pizza = Pizza('Margarita')
         self.pizza.cooking_time = 15
@@ -129,7 +127,8 @@ class MargaritaPizzaBuilder(Builder):
     def add_topping(self) -> None:
         self.pizza.topping.extend(
             [
-                element for element in (
+                element
+                for element in (
                     PizzaTopLevelType.MOZZARELLA,
                     PizzaTopLevelType.MOZZARELLA,
                     PizzaTopLevelType.BACON,
@@ -142,7 +141,6 @@ class MargaritaPizzaBuilder(Builder):
 
 
 class SalamiPizzaBuilder(Builder):
-
     def __init__(self):
         self.pizza = Pizza("Salami")
         self.pizza.cooking_time = 10
@@ -159,7 +157,8 @@ class SalamiPizzaBuilder(Builder):
     def add_topping(self) -> None:
         self.pizza.topping.extend(
             [
-                element for element in (
+                element
+                for element in (
                     PizzaTopLevelType.MOZZARELLA,
                     PizzaTopLevelType.SALAMI,
                 )

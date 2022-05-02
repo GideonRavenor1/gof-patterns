@@ -5,6 +5,7 @@ from enum import Enum
 
 class CoffeeState(Enum):
     """Возможные состояния кофе-машины"""
+
     IDLE = 0
     CHOOSE = 1
     CAPPUCCINO = 2
@@ -32,6 +33,7 @@ class State(ABC):
 
 class IdleState(State):
     """Состояние ожидания"""
+
     def insert_money(self, coffee_machine) -> None:
         print("Переходим к состоянию выбора коффе")
         coffee_machine.set_state(CoffeeState.CHOOSE)
@@ -45,6 +47,7 @@ class IdleState(State):
 
 class WaitChooseState(State):
     """Состояние выбора приготовляемого коффе"""
+
     def insert_money(self, coffee_machine) -> None:
         print("Загружено достаточно средств для заказа?")
 
@@ -60,6 +63,7 @@ class WaitChooseState(State):
 
 class ChangeState(State):
     """Состояние выбора приготовляемого коффе"""
+
     def insert_money(self, coffee_machine) -> None:
         self.eject_money(coffee_machine)
 
@@ -86,8 +90,7 @@ class CappuccinoState(State):
         water = 0.3
         milk = 0.1
         if coffee_machine.money >= cost:
-            if (coffee_machine.water >= water and
-                    coffee_machine.milk >= milk):
+            if coffee_machine.water >= water and coffee_machine.milk >= milk:
                 print("Готовим Капучино!")
                 coffee_machine.water -= water
                 coffee_machine.milk -= milk
@@ -117,8 +120,7 @@ class LatteState(State):
         water = 0.3
         milk = 0.2
         if coffee_machine.money >= cost:
-            if (coffee_machine.water >= water and
-                    coffee_machine.milk >= milk):
+            if coffee_machine.water >= water and coffee_machine.milk >= milk:
                 print("Готовим Латте!")
                 coffee_machine.water -= water
                 coffee_machine.milk -= milk
@@ -164,6 +166,7 @@ class EspressoState(State):
 
 class CoffeeMachine:
     """Класс кофе-машины"""
+
     def __init__(self, water: float, milk: float):
         self.water = water
         self.milk = milk
@@ -189,7 +192,6 @@ class CoffeeMachine:
         self.money += money
         print(f"Внесено {self.money} рублей")
         self.__state.insert_money(self)
-
 
     def cappuccino(self) -> None:
         print(f"Выбран режим приготовления Капучино")
