@@ -1,16 +1,53 @@
-from abc import ABC, abstractmethod
-from typing import List
+"""
+Паттерн "Команда" (Command) позволяет инкапсулировать запрос на выполнение
+определенного действия в виде отдельного объекта.
+Этот объект запроса на действие и называется командой.
+При этом объекты, инициирующие запросы на выполнение действия,
+отделяются от объектов, которые выполняют это действие.
+
+Команды могут использовать параметры, которые передают ассоциированную
+с командой информацию. Кроме того, команды могут ставиться в очередь
+и также могут быть отменены.
+
+Когда использовать команды?
+    1. Когда надо передавать в качестве параметров определенные действия,
+    вызываемые в ответ на другие действия.
+    То есть когда необходимы функции обратного действия в ответ
+    на определенные действия.
+
+    2. Когда необходимо обеспечить выполнение очереди запросов, а также их
+    возможную отмену.
+
+    3. Когда надо поддерживать логгирование изменений в результате запросов.
+    Использование логов может помочь восстановить
+    состояние системы - для этого необходимо будет использовать
+    последовательность запротоколированных команд.
+
+Недостатки: Вводиться большое количество дополнительных классов.
+"""
+
+
+from abc import (
+    ABC,
+    abstractmethod,
+)
 
 
 class ICommand(ABC):
-    """Интерфейсный класс для выполняемых операций"""
+    """
+    Интерфейсный класс для выполняемых операций
+    """
 
     @abstractmethod
     def execute(self) -> None:
-        ...
+        pass
 
 
 class ChiefAssistant:
+    """
+    Ассистент шефа
+    """
+
     def prepare_pizza_dough(self):
         print("Ассистент подготавливает тесто для пиццы")
 
@@ -22,6 +59,10 @@ class ChiefAssistant:
 
 
 class Stove:
+    """
+    Печь
+    """
+
     def prepare_stove(self):
         print("Печь разогревается")
 
@@ -30,6 +71,10 @@ class Stove:
 
 
 class ChiefCooker:
+    """
+    Шеф
+    """
+
     def make_pizza_base(self):
         print("Шеф раскатывает основу для пиццы")
 
@@ -44,7 +89,9 @@ class ChiefCooker:
 
 
 class PrepareStoveCommand(ICommand):
-    """Класс команды для разогрева печи"""
+    """
+    Класс команды для разогрева печи
+    """
 
     def __init__(self, executor: Stove):
         self.__executor = executor
@@ -54,7 +101,9 @@ class PrepareStoveCommand(ICommand):
 
 
 class PrepareDoughCommand(ICommand):
-    """Класс команды для подготовки теста пиццы"""
+    """
+    Класс команды для подготовки теста пиццы
+    """
 
     def __init__(self, executor: ChiefAssistant):
         self.__executor = executor
@@ -64,7 +113,9 @@ class PrepareDoughCommand(ICommand):
 
 
 class PrepareToppingCommand(ICommand):
-    """Класс команды для нарезки начинки пиццы"""
+    """
+    Класс команды для нарезки начинки пиццы
+    """
 
     def __init__(self, executor: ChiefAssistant):
         self.__executor = executor
@@ -74,7 +125,9 @@ class PrepareToppingCommand(ICommand):
 
 
 class PrepareSauceCommand(ICommand):
-    """Класс команды для приготовления соуса"""
+    """
+    Класс команды для приготовления соуса
+    """
 
     def __init__(self, executor: ChiefAssistant):
         self.__executor = executor
@@ -84,7 +137,9 @@ class PrepareSauceCommand(ICommand):
 
 
 class CookingPizzaCommand(ICommand):
-    """Класс команды для приготовления пиццы в печи"""
+    """
+    Класс команды для приготовления пиццы в печи
+    """
 
     def __init__(self, executor: Stove):
         self.__executor = executor
@@ -104,7 +159,9 @@ class MakePizzaBaseCommand(ICommand):
 
 
 class AppliedSauceCommand(ICommand):
-    """Класс команды для нанесения соуса на пиццу"""
+    """
+    Класс команды для нанесения соуса на пиццу
+    """
 
     def __init__(self, executor: ChiefCooker):
         self.__executor = executor
@@ -114,7 +171,9 @@ class AppliedSauceCommand(ICommand):
 
 
 class AddToppingCommand(ICommand):
-    """Класс команды для добавления начинки на пиццу"""
+    """
+    Класс команды для добавления начинки на пиццу
+    """
 
     def __init__(self, executor: ChiefCooker):
         self.__executor = executor
@@ -124,8 +183,10 @@ class AddToppingCommand(ICommand):
 
 
 class BonAppetitCommand(ICommand):
-    """Класс команды для пожелания клиенту
-    приятного аппетита"""
+    """
+    Класс команды для пожелания клиенту
+    приятного аппетита
+    """
 
     def __init__(self, executor: ChiefCooker):
         self.__executor = executor
@@ -135,13 +196,15 @@ class BonAppetitCommand(ICommand):
 
 
 class Pizzeria:
-    """Класс агрегации всех команд для приготовления
-    пиццы"""
+    """
+    Класс агрегации всех команд для приготовления
+    пиццы
+    """
 
     def __init__(self):
-        self.history: List[ICommand] = []
+        self.history: list[ICommand] = []
 
-    def addCommand(self, command: ICommand) -> None:
+    def add_command(self, command: ICommand) -> None:
         self.history.append(command)
 
     def cook(self) -> None:
@@ -162,14 +225,14 @@ if __name__ == "__main__":
     stove = Stove()
     pizzeria = Pizzeria()
     # формируем последовательность команд для приготовления пиццы
-    pizzeria.addCommand(PrepareDoughCommand(assistant))
-    pizzeria.addCommand(MakePizzaBaseCommand(chief))
-    pizzeria.addCommand(PrepareSauceCommand(assistant))
-    pizzeria.addCommand(AppliedSauceCommand(chief))
-    pizzeria.addCommand(PrepareStoveCommand(stove))
-    pizzeria.addCommand(PrepareToppingCommand(assistant))
-    pizzeria.addCommand(AddToppingCommand(chief))
-    pizzeria.addCommand(CookingPizzaCommand(stove))
-    pizzeria.addCommand(BonAppetitCommand(chief))
+    pizzeria.add_command(PrepareDoughCommand(assistant))
+    pizzeria.add_command(MakePizzaBaseCommand(chief))
+    pizzeria.add_command(PrepareSauceCommand(assistant))
+    pizzeria.add_command(AppliedSauceCommand(chief))
+    pizzeria.add_command(PrepareStoveCommand(stove))
+    pizzeria.add_command(PrepareToppingCommand(assistant))
+    pizzeria.add_command(AddToppingCommand(chief))
+    pizzeria.add_command(CookingPizzaCommand(stove))
+    pizzeria.add_command(BonAppetitCommand(chief))
     # запускаем процесс приготовления пиццы
     pizzeria.cook()

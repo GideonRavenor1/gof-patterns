@@ -1,3 +1,22 @@
+"""
+Версия в стиле Python.
+
+Паттерн Итератор (Iterator) предоставляет абстрактный интерфейс для
+последовательного доступа ко всем элементам составного объекта
+без раскрытия его внутренней структуры.
+Когда использовать итераторы?
+    1. Когда необходимо осуществить обход объекта без раскрытия его внутренней
+    структуры
+
+    2. Когда имеется набор составных объектов, и надо обеспечить единый
+    интерфейс для их перебора
+
+    3. Когда необходимо предоставить несколько альтернативных вариантов
+    перебора одного и того же объекта
+
+Недостатки: Если достаточно цикла, его применение не оправданно.
+"""
+
 from typing import List
 from collections.abc import Iterable, Iterator
 
@@ -7,7 +26,7 @@ class PizzaItem:
         self.number = number
 
     def __str__(self):
-        return f"кусочек пиццы под номером: {self.number}"
+        return f'кусочек пиццы под номером: {self.number}'
 
 
 class PizzaSliceIterator(Iterator):
@@ -28,7 +47,7 @@ class PizzaSliceIterator(Iterator):
 class PizzaAggregate(Iterable):
     def __init__(self, amount_slices: int = 10):
         self._slices = [PizzaItem(it + 1) for it in range(amount_slices)]
-        print(f"Приготовили пиццу и порезали " f"на {amount_slices} кусочков")
+        print(f'Приготовили пиццу и порезали ' f'на {amount_slices} кусочков')
 
     def amount_slices(self) -> int:
         return len(self._slices)
@@ -40,11 +59,11 @@ class PizzaAggregate(Iterable):
         return PizzaSliceIterator(self._slices, True)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pizza = PizzaAggregate(5)
     for item in pizza:
-        print("Это " + str(item))
-    print("*" * 8 + "Обход в обратную сторону" + "*" * 8)
+        print('Это ' + str(item))
+    print('*' * 8 + 'Обход в обратную сторону' + '*' * 8)
     iterator = pizza.get_reverse_iterator()
     for item in iterator:
-        print("Это " + str(item))
+        print('Это ' + str(item))

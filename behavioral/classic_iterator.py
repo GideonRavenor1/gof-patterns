@@ -1,5 +1,23 @@
-from abc import ABC, abstractmethod
-from typing import List
+"""
+Паттерн Итератор (Iterator) предоставляет абстрактный интерфейс для
+последовательного доступа ко всем элементам составного объекта
+без раскрытия его внутренней структуры.
+Когда использовать итераторы?
+    1. Когда необходимо осуществить обход объекта без раскрытия его внутренней
+    структуры
+
+    2. Когда имеется набор составных объектов, и надо обеспечить единый
+    интерфейс для их перебора
+
+    3. Когда необходимо предоставить несколько альтернативных вариантов
+    перебора одного и того же объекта
+Недостатки: Если достаточно цикла, его применение не оправданно.
+"""
+
+from abc import (
+    ABC, 
+    abstractmethod,
+)
 
 
 class PizzaItem:
@@ -7,21 +25,21 @@ class PizzaItem:
         self.number = number
 
     def __str__(self):
-        return f"кусочек пиццы под номером: {self.number}"
+        return f'кусочек пиццы под номером: {self.number}'
 
 
 class Iterator(ABC):
     @abstractmethod
     def next(self) -> PizzaItem:
-        ...
+        pass
 
     @abstractmethod
     def has_next(self) -> bool:
-        ...
+        pass
 
 
 class PizzaSliceIterator(Iterator):
-    def __init__(self, pizza: List[PizzaItem]):
+    def __init__(self, pizza: list[PizzaItem]):
         self._pizza = pizza
         self._index = 0
 
@@ -37,7 +55,7 @@ class PizzaSliceIterator(Iterator):
 class PizzaAggregate:
     def __init__(self, amount_slices: int = 10):
         self.slices = [PizzaItem(it + 1) for it in range(amount_slices)]
-        print(f"Приготовили пиццу и порезали " f"на {amount_slices} кусочков")
+        print(f'Приготовили пиццу и порезали ' f'на {amount_slices} кусочков')
 
     def amount_slices(self) -> int:
         return len(self.slices)
@@ -46,15 +64,15 @@ class PizzaAggregate:
         return PizzaSliceIterator(self.slices)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pizza = PizzaAggregate(5)
     iterator = pizza.iterator()
     while iterator.has_next():
         item = iterator.next()
-        print("Это " + str(item))
-    print("*" * 20)
+        print('Это ' + str(item))
+    print('*' * 20)
     iterator = pizza.iterator()
     iterator.next()
     while iterator.has_next():
         item = iterator.next()
-        print("Это " + str(item))
+        print('Это ' + str(item))

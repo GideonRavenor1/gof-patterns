@@ -1,12 +1,41 @@
-from abc import ABC, abstractmethod
+"""
+Цепочка Обязанностей (Chain of responsibility) -
+поведенческий шаблон проектирования, который позволяет избежать жесткой
+привязки отправителя запроса к получателю. Все возможные обработчики запроса
+образуют цепочку, а сам запрос перемещается по этой цепочке.
+Каждый объект в этой цепочке при получении запроса выбирает,
+либо закончить обработку запроса, либо передать запрос
+на обработку следующему по цепочке объекту.
+
+Когда применяется цепочка обязанностей?
+    1. Когда имеется более одного объекта, который может обработать
+    определенный запрос
+
+    2. Когда надо передать запрос на выполнение одному из нескольких объект,
+    точно не определяя, какому именно объекту
+
+    3. Когда набор объектов задается динамически
+
+Недостатки: Запрос может не обработаться.
+"""
+
+from abc import (
+    ABC,
+    abstractmethod,
+)
 from enum import Enum
-from typing import List, Optional, TypeVar
+from typing import (
+    Optional,
+    TypeVar,
+)
 
 T = TypeVar("T")
 
 
 class EnumOrder(Enum):
-    """Тип Заказа"""
+    """
+    Тип Заказа
+    """
 
     VEGAN = 1
     NOT_VEGAN = 2
@@ -15,9 +44,11 @@ class EnumOrder(Enum):
 
 
 class RequestOrder:
-    """Класс запроса на обслуживание от клиента"""
+    """
+    Класс запроса на обслуживание от клиента
+    """
 
-    def __init__(self, description: List[str], order_type: EnumOrder):
+    def __init__(self, description: list[str], order_type: EnumOrder):
         self.__description = description
         self.__order_type = order_type
 
@@ -31,7 +62,9 @@ class RequestOrder:
 
 
 class Handler(ABC):
-    """Базовый класс для обработчиков запросов"""
+    """
+    Базовый класс для обработчиков запросов
+    """
 
     def __init__(self, successor: Optional[T] = None):
         self.__successor = successor
@@ -51,11 +84,13 @@ class Handler(ABC):
 
     @abstractmethod
     def _check_request(self, request_type: EnumOrder) -> bool:
-        ...
+        pass
 
 
 class WaiterHandler(Handler):
-    """Класс обработки запроса официантом"""
+    """
+    Класс обработки запроса официантом
+    """
 
     def __init__(self, successor: Handler = None):
         super().__init__(successor)
@@ -67,14 +102,16 @@ class WaiterHandler(Handler):
             EnumOrder.NOT_VEGAN,
         )
         if check:
-            print("Официант передает заказ дальше")
+            print('Официант передает заказ дальше')
         else:
-            print("Официант отклоняет запрос клиента")
+            print('Официант отклоняет запрос клиента')
         return not check
 
 
 class KitchenHandler(Handler):
-    """Класс обработки запроса кухней пицерии"""
+    """
+    Класс обработки запроса кухней пиццерии
+    """
 
     def __init__(self, successor: Handler = None):
         super().__init__(successor)
@@ -82,14 +119,16 @@ class KitchenHandler(Handler):
     def _check_request(self, request_type: EnumOrder) -> bool:
         check = request_type in (EnumOrder.VEGAN, EnumOrder.NOT_VEGAN)
         if check:
-            print("Шеф-повар приступил к готовке заказа на кухне")
+            print('Шеф-повар приступил к готовке заказа на кухне')
         else:
-            print("Шеф-повар воротит нос от поступившего запроса")
+            print('Шеф-повар воротит нос от поступившего запроса')
         return check
 
 
 class BarmanHandler(Handler):
-    """Класс обработки запроса на стойке бара"""
+    """
+    Класс обработки запроса на стойке бара
+    """
 
     def __init__(self, successor: Handler = None):
         super().__init__(successor)
@@ -97,11 +136,11 @@ class BarmanHandler(Handler):
     def _check_request(self, request_type: EnumOrder) -> bool:
         check = request_type is EnumOrder.BINGE
         if check:
-            print("Бармен наливает заказанный напиток клиентом")
+            print('Бармен наливает заказанный напиток клиентом')
         else:
             print(
-                "Бармен разводит руками и может только восхититься "
-                "гурманским вкусам клиента"
+                'Бармен разводит руками и может только восхититься '
+                'гурманским вкусам клиента'
             )
         return check
 
@@ -115,8 +154,8 @@ if __name__ == "__main__":
     waiter.successor = bar
 
     def request_handler(request: RequestOrder):
-        print("*" * 10 + "Обработка запроса" + "*" * 10)
-        print(f"Запрос от клиента: {request.order_list}")
+        print('*' * 10 + "Обработка запроса" + "*" * 10)
+        print(f'Запрос от клиента: {request.order_list}')
         waiter.handle(request)
 
     req_list = ['Борщ', 'Макарошки по-флотски']

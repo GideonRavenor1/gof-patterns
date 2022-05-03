@@ -1,10 +1,30 @@
-from typing import Dict
-from abc import ABC, abstractmethod
+"""
+Состояние (State) - шаблон проектирования, который позволяет объекту изменять
+свое поведение в зависимости от внутреннего состояния.
+
+Когда применяется данный паттерн?
+    1. Когда поведение объекта должно зависеть от его состояния и может
+    изменяться динамически во время выполнения
+
+    2. Когда в коде методов объекта используются многочисленные условные
+    конструкции, выбор которых зависит от текущего состояния объекта
+
+Недостатки: Усложнение кода при малом количестве состояний и их редком
+изменении.
+"""
+
+
+from abc import (
+    ABC,
+    abstractmethod,
+)
 from enum import Enum
 
 
 class CoffeeState(Enum):
-    """Возможные состояния кофе-машины"""
+    """
+    Возможные состояния кофе-машины
+    """
 
     IDLE = 0
     CHOOSE = 1
@@ -15,163 +35,179 @@ class CoffeeState(Enum):
 
 
 class State(ABC):
-    """Базовый класс состояния,
-    определяющий интерфейс"""
+    """
+    Базовый класс состояния,
+    определяющий интерфейс
+    """
 
     @abstractmethod
-    def insert_money(self, coffee_machine) -> None:
-        ...
+    def insert_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        pass
 
     @abstractmethod
-    def eject_money(self, coffee_machine) -> None:
-        ...
+    def eject_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        pass
 
     @abstractmethod
-    def make_coffee(self, coffee_machine) -> None:
-        ...
+    def make_coffee(self, coffee_machine: 'CoffeeMachine') -> None:
+        pass
 
 
 class IdleState(State):
-    """Состояние ожидания"""
+    """
+    Состояние ожидания
+    """
 
-    def insert_money(self, coffee_machine) -> None:
-        print("Переходим к состоянию выбора коффе")
+    def insert_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        print('Переходим к состоянию выбора кофе')
         coffee_machine.set_state(CoffeeState.CHOOSE)
 
-    def eject_money(self, coffee_machine) -> None:
-        print("Какие такие деньги? оО")
+    def eject_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        print('Какие такие деньги? оО')
 
-    def make_coffee(self, coffee_machine) -> None:
-        print("Говорят на халяву и уксус сладок...")
+    def make_coffee(self, coffee_machine: 'CoffeeMachine') -> None:
+        print('Говорят на халяву и уксус сладок...внесите бабки!')
 
 
 class WaitChooseState(State):
-    """Состояние выбора приготовляемого коффе"""
+    """
+    Состояние выбора приготовляемого кофе
+    """
 
-    def insert_money(self, coffee_machine) -> None:
-        print("Загружено достаточно средств для заказа?")
+    def insert_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        print('Загружено достаточно средств для заказа?')
 
-    def eject_money(self, coffee_machine) -> None:
-        print("Заказывай или оставь свои деньги!")
+    def eject_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        print('Заказывай или оставь свои деньги!')
 
-    def make_coffee(self, coffee_machine) -> None:
+    def make_coffee(self, coffee_machine: 'CoffeeMachine') -> None:
         if coffee_machine.next_state is None:
-            print("Выберете какой кофе хотите приготовить!")
+            print('Выберете какой кофе хотите приготовить!')
         else:
             coffee_machine.set_state(coffee_machine.next_state)
 
 
 class ChangeState(State):
-    """Состояние выбора приготовляемого коффе"""
+    """
+    Состояние выбора приготовляемого кофе
+    """
 
-    def insert_money(self, coffee_machine) -> None:
+    def insert_money(self, coffee_machine: 'CoffeeMachine') -> None:
         self.eject_money(coffee_machine)
 
-    def eject_money(self, coffee_machine) -> None:
-        print(f"Возврат {coffee_machine.money} рублей")
+    def eject_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        print(f'Возврат {coffee_machine.money} рублей')
         coffee_machine.money = 0
         coffee_machine.set_state(CoffeeState.IDLE)
 
-    def make_coffee(self, coffee_machine) -> None:
+    def make_coffee(self, coffee_machine: 'CoffeeMachine') -> None:
         self.eject_money(coffee_machine)
 
 
 class CappuccinoState(State):
-    """Состояние приготовления купучино"""
+    """
+    Состояние приготовления капучино
+    """
 
-    def insert_money(self, coffee_machine) -> None:
+    def insert_money(self, coffee_machine: 'CoffeeMachine') -> None:
         self.make_coffee(coffee_machine)
 
-    def eject_money(self, coffee_machine) -> None:
-        print("Не дождешься!!!")
+    def eject_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        print('Не дождешься!!!')
 
-    def make_coffee(self, coffee_machine) -> None:
+    def make_coffee(self, coffee_machine: 'CoffeeMachine') -> None:
         cost = 32
         water = 0.3
         milk = 0.1
         if coffee_machine.money >= cost:
             if coffee_machine.water >= water and coffee_machine.milk >= milk:
-                print("Готовим Капучино!")
+                print('Готовим Капучино!')
                 coffee_machine.water -= water
                 coffee_machine.milk -= milk
                 coffee_machine.money -= cost
             else:
-                print("Не хватает ингридиентов!")
+                print('Не хватает ингридиентов!')
             if coffee_machine.money > 0:
                 coffee_machine.set_state(CoffeeState.CHANGE_MONEY)
                 coffee_machine.return_money()
             else:
                 coffee_machine.set_state(CoffeeState.IDLE)
         else:
-            print("Недостаточно средств для приготовления!")
+            print('Недостаточно средств для приготовления!')
 
 
 class LatteState(State):
-    """Состояние приготовления латте"""
+    """
+    Состояние приготовления латте
+    """
 
-    def insert_money(self, coffee_machine) -> None:
+    def insert_money(self, coffee_machine: 'CoffeeMachine') -> None:
         self.make_coffee(coffee_machine)
 
-    def eject_money(self, coffee_machine) -> None:
-        print("Не дождешься!!!")
+    def eject_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        print('Не дождешься!!!')
 
-    def make_coffee(self, coffee_machine) -> None:
+    def make_coffee(self, coffee_machine: 'CoffeeMachine') -> None:
         cost = 40
         water = 0.3
         milk = 0.2
         if coffee_machine.money >= cost:
             if coffee_machine.water >= water and coffee_machine.milk >= milk:
-                print("Готовим Латте!")
+                print('Готовим Латте!')
                 coffee_machine.water -= water
                 coffee_machine.milk -= milk
                 coffee_machine.money -= cost
             else:
-                print("Не хватает ингридиентов!")
+                print('Не хватает ингридиентов!')
             if coffee_machine.money > 0:
                 coffee_machine.set_state(CoffeeState.CHANGE_MONEY)
                 coffee_machine.return_money()
             else:
                 coffee_machine.set_state(CoffeeState.IDLE)
         else:
-            print("Недостаточно средств для приготовления!")
+            print('Недостаточно средств для приготовления!')
 
 
 class EspressoState(State):
-    """Состояние приготовления espresso'"""
+    """
+    Состояние приготовления espresso
+    """
 
-    def insert_money(self, coffee_machine) -> None:
+    def insert_money(self, coffee_machine: 'CoffeeMachine') -> None:
         self.make_coffee(coffee_machine)
 
-    def eject_money(self, coffee_machine) -> None:
-        print("Не дождешься!!!")
+    def eject_money(self, coffee_machine: 'CoffeeMachine') -> None:
+        print('Не дождешься!!!')
 
-    def make_coffee(self, coffee_machine) -> None:
+    def make_coffee(self, coffee_machine: 'CoffeeMachine') -> None:
         cost = 25
         water = 0.3
         if coffee_machine.money >= cost:
             if coffee_machine.water >= water:
-                print("Готовим espresso!")
+                print('Готовим espresso!')
                 coffee_machine.water -= water
                 coffee_machine.money -= cost
             else:
-                print("Не хватает ингридиентов!")
+                print('Не хватает ингридиентов!')
             if coffee_machine.money > 0:
                 coffee_machine.set_state(CoffeeState.CHANGE_MONEY)
                 coffee_machine.return_money()
             else:
                 coffee_machine.set_state(CoffeeState.IDLE)
         else:
-            print("Недостаточно средств для приготовления!")
+            print('Недостаточно средств для приготовления!')
 
 
 class CoffeeMachine:
-    """Класс кофе-машины"""
+    """
+    Класс кофе-машины
+    """
 
     def __init__(self, water: float, milk: float):
         self.water = water
         self.milk = milk
         self.money: int = 0
-        self.__states: Dict[CoffeeState, State] = {
+        self.__states: dict[CoffeeState, State] = {
             CoffeeState.IDLE: IdleState(),
             CoffeeState.CHOOSE: WaitChooseState(),
             CoffeeState.CAPPUCCINO: CappuccinoState(),
@@ -190,33 +226,33 @@ class CoffeeMachine:
 
     def insert_money(self, money: int) -> None:
         self.money += money
-        print(f"Внесено {self.money} рублей")
+        print(f'Внесено {self.money} рублей')
         self.__state.insert_money(self)
 
     def cappuccino(self) -> None:
-        print(f"Выбран режим приготовления Капучино")
+        print(f'Выбран режим приготовления Капучино')
         self.next_state = CoffeeState.CAPPUCCINO
         self.__state.make_coffee(self)
 
     def espresso(self) -> None:
-        print(f"Выбран режим приготовления Espresso")
+        print(f'Выбран режим приготовления Espresso')
         self.next_state = CoffeeState.ESPRESSO
         self.__state.make_coffee(self)
 
     def latte(self) -> None:
-        print(f"Выбран режим приготовления Латте")
+        print(f'Выбран режим приготовления Латте')
         self.next_state = CoffeeState.LATTE
         self.__state.make_coffee(self)
 
     def make_coffee(self):
-        print("Запуск приготовления выбранного кофе!")
+        print('Запуск приготовления выбранного кофе!')
         self.__state.make_coffee(self)
 
     def return_money(self):
         self.__state.eject_money(self)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     coffee_machine = CoffeeMachine(1.0, 1.0)
     coffee_machine.make_coffee()
     coffee_machine.insert_money(10)
@@ -224,7 +260,7 @@ if __name__ == "__main__":
     coffee_machine.cappuccino()
     coffee_machine.make_coffee()
     coffee_machine.insert_money(20)
-    print("**** Когда мало продуктов для приготовления кофе ****")
+    print('**** Когда мало продуктов для приготовления кофе ****')
     coffee_machine = CoffeeMachine(0.1, 0.1)
     coffee_machine.insert_money(100)
     coffee_machine.make_coffee()
