@@ -1,23 +1,47 @@
+"""
+Шаблонный метод (Template Method) определяет общий алгоритм поведения
+подклассов, позволяя им переопределить отдельные шаги этого алгоритма без
+изменения его структуры.
+
+Когда использовать шаблонный метод?
+    1. Когда планируется, что в будущем подклассы должны будут переопределять
+    различные этапы алгоритма без изменения его структуры
+
+    2. Когда в классах, реализующим схожий алгоритм, происходит дублирование
+    кода. Вынесение общего кода в шаблонный метод уменьшит его дублирование
+    в подклассах.
+
+Недостатки:
+    1. Потеря гибкости за счет наличия жестких ограничений абстрактного
+    базового алгоритма
+    2. Сложность поддержки кода с ростом количества шагов в алгоритме
+"""
+
+
 from abc import ABC, abstractmethod
 from typing import List
 
 
 class Pizza:
-    """Класс приготовляемой шеф-поваром пиццы"""
+    """
+    Класс приготовляемой шеф-поваром пиццы
+    """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__state: List[str] = ['base']
 
     def add_ingredient(self, ingredient: str) -> None:
         print(f"В пиццу добавлен ингредиент: {ingredient}")
         self.__state.append(ingredient)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Ингридиенты пиццы: {self.__state}"
 
 
 class PizzaMaker(ABC):
-    """Базовый класс шаблонного метода"""
+    """
+    Базовый класс шаблонного метода
+    """
 
     def make_pizza(self, pizza: Pizza) -> None:
         self.prepare_sauce(pizza)
@@ -38,7 +62,9 @@ class PizzaMaker(ABC):
 
 
 class MargaritaMaker(PizzaMaker):
-    """Класс приготовления пиццы Маргарита"""
+    """
+    Класс приготовления пиццы Маргарита
+    """
 
     def prepare_sauce(self, pizza: Pizza) -> None:
         pizza.add_ingredient('Tomato')
@@ -53,7 +79,9 @@ class MargaritaMaker(PizzaMaker):
 
 
 class SalamiMaker(PizzaMaker):
-    """Класс приготовления пиццы Маргарита"""
+    """
+    Класс приготовления пиццы Маргарита
+    """
 
     def prepare_sauce(self, pizza: Pizza) -> None:
         pizza.add_ingredient('Pesto')
@@ -68,12 +96,14 @@ class SalamiMaker(PizzaMaker):
 
 
 class Chief:
-    """Класс шеф-повара"""
+    """
+    Класс шеф-повара
+    """
 
-    def __init__(self, template_pizza: PizzaMaker):
+    def __init__(self, template_pizza: PizzaMaker) -> None:
         self.__cook = template_pizza
 
-    def set_cook_template(self, template_pizza: PizzaMaker):
+    def set_cook_template(self, template_pizza: PizzaMaker) -> None:
         self.__cook = template_pizza
 
     def make_pizza(self) -> Pizza:
